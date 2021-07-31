@@ -1,6 +1,22 @@
 const mqtt = require('mqtt')
 const logger = require('./logger.js');
 
+let discoveryPayload = {
+    state_topic: "eagle/meter/demand",
+    device_class: "power",
+    state_class: "measurement",
+    unit_of_measurement: "kW",
+    device: {
+        identifiers: ["LegacyEagle"],
+        manufacturer: "Rainforest",
+        model: "Rainforest Eagle-100",
+        name: "Eagle Engergy Monitor",
+        sw_version: "0.1"
+    },
+    name: "Eagle Power Demand",
+    unique_id: "Eagle1002MQTT"
+}
+
 class MqttClient {
   constructor(host, port, username, password, topic_base) {
     this.client = null
@@ -42,6 +58,10 @@ class MqttClient {
       logger.info('MQTT client connected')
       logger.info('Publishing to topic base: ' + this.topic_base)
       this.client.publish(this.topic_base + '/bridge/status', 'online', {retain: true})
+
+
+
+      this.client.publish('homeassistant/sensor/eagle_power_demand/config', JSON.stringify(discoveryPayload) , {retain: false})
     })
 
     this.client.on('close', () => {
