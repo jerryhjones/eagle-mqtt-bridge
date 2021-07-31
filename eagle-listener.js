@@ -35,12 +35,22 @@ const processMessage = function(msg) {
     case 'instantaneousdemand':
       // Current demand in W
       var node = msg.instantaneousdemand[0]
-      var mult = parseInt(node.multiplier[0], 16)
+      
+      var mult = parseInt(node.multiplier[0])
       var multiplier = mult ? mult : 1  //If zero use 1
-      var div = parseInt(node.divisor[0], 16)
+      var div = parseInt(node.divisor[0])
       var divisor = div ? div : 1 //If zero use 1
-      var demand = parseInt(node.demand[0], 16)
-      var value = parseInt(((demand * multiplier)/divisor) * 1000)
+      var demand = parseInt(node.demand[0])
+      
+      
+      // Demand is a 2s complement value
+      var demandBinary = parseInt(node.demand[0], 16).toString(2)
+      var demandIsNegative = demandBinary[0] == 1
+      if (demandIsNegative) {
+        demand = ~demand * -1
+      }
+      
+      var value = parseInt(((demand * multiplier)/divisor) * 1000) / 1000.0
       //{ devicemacid: [ '0xd8d5b90000003e58' ],
       //  metermacid: [ '0x00078100001d2c64' ],
       //  timestamp: [ '0x246d0178' ],
