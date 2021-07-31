@@ -2,10 +2,11 @@ const mqtt = require('mqtt')
 const logger = require('./logger.js');
 
 class MqttClient {
-  constructor(host, username, password, topic_base) {
+  constructor(host, port, username, password, topic_base) {
     this.client = null
     this.topic_base = topic_base
     this.host = 'mqtt://' + host
+    this.port = port
     if (username && password) {
       this.username = username
       this.password = password
@@ -19,12 +20,18 @@ class MqttClient {
     var connectOptions = {
         will: {topic: this.topic_base + '/bridge/status', payload: 'offline', retain: true}
     }
+
+    if (this.port) {
+      connectOptions.port = this.port
+    }
+
     if (this.username && this.password) {
       connectOptions.username = this.username
       connectOptions.password = this.password
     }
 
-    logger.info("Connecting to " + this.host)
+    let portMessage = this.port || 1883
+    logger.info("Connecting to " + this.host + " port: " + portMessage)
     this.client = mqtt.connect(this.host, connectOptions)
 
     this.client.on('error', (err) => {
