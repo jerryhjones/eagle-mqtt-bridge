@@ -6,6 +6,10 @@ logger.info('Starting Eagle to MQTT Bridge.')
 
 regex = new RegExp('^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$')
 const host = regex.test(process.env.MQTT_HOST) ? process.env.MQTT_HOST : null
+const port = process.env.MQTT_PORT
+
+logger.info("host: " + host)
+logger.info("port: " + port)
 
 regex = new RegExp('^((?![#+]).)+$') 
 if (!regex.test(process.env.MQTT_TOPIC) && process.env.MQTT_TOPIC) {
@@ -20,7 +24,7 @@ if (!host) {
   logger.error('MQTT_HOST must be a valid IPv4 address.')
   process.exit()
 } else {
-  var mqtt = new mqttclient(host, username, password, topic_base);
+  var mqtt = new mqttclient(host, port, username, password, topic_base);
   mqtt.connect();
 }
 
