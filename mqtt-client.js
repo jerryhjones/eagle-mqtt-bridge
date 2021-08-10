@@ -61,7 +61,7 @@ class MqttClient {
 
 
 
-      this.client.publish('homeassistant/sensor/eagle_power_demand/config', JSON.stringify(discoveryPayload) , {retain: false})
+      this.client.publish('homeassistant/sensor/eagle_power_demand/config', JSON.stringify(discoveryPayload) , {retain: true})
     })
 
     this.client.on('close', () => {
