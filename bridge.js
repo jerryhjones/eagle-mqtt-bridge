@@ -49,7 +49,7 @@ setInterval(isalive, 15000, false)
 
 eagle.on('message', (message) => {
   Object.keys(message).forEach(function(key) {
-    mqtt.sendMessage(key, message[key])
+    mqtt.sendMessage(key, message[key], true)
   })
   isalive(true)
 })

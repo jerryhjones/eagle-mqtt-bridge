@@ -17,6 +17,38 @@ let discoveryPayload = {
     unique_id: "Eagle1002MQTT"
 }
 
+let discoveryPayloadFromGrid = {
+  state_topic: "eagle/meter/delivered",
+  device_class: "energy",
+  state_class: "total_increasing",
+  unit_of_measurement: "kWh",
+  device: {
+      identifiers: ["LegacyEagle"],
+      manufacturer: "Rainforest",
+      model: "Rainforest Eagle-100",
+      name: "Eagle Engergy Monitor",
+      sw_version: "0.1"
+  },
+  name: "Eagle From Grid",
+  unique_id: "Eagle1002MQTTFromGrid"
+}
+
+let discoveryPayloadToGrid = {
+  state_topic: "eagle/meter/received",
+  device_class: "energy",
+  state_class: "total_increasing",
+  unit_of_measurement: "kWh",
+  device: {
+      identifiers: ["LegacyEagle"],
+      manufacturer: "Rainforest",
+      model: "Rainforest Eagle-100",
+      name: "Eagle Engergy Monitor",
+      sw_version: "0.1"
+  },
+  name: "Eagle To Grid",
+  unique_id: "Eagle1002MQTTToGrid"
+}
+
 class MqttClient {
   constructor(host, port, username, password, topic_base) {
     this.client = null
@@ -62,6 +94,8 @@ class MqttClient {
 
 
       this.client.publish('homeassistant/sensor/eagle_power_demand/config', JSON.stringify(discoveryPayload) , {retain: true})
+      this.client.publish('homeassistant/sensor/eagle_to_grid/config', JSON.stringify(discoveryPayloadFromGrid) , {retain: true})
+      this.client.publish('homeassistant/sensor/eagle_from_grid/config', JSON.stringify(discoveryPayloadToGrid) , {retain: true})
     })
 
     this.client.on('close', () => {
